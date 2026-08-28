@@ -120,7 +120,9 @@ else
 fi
 
 # Check 8: NFS/autofs (8 pts)
-if grep -q nfsserver.example.com:/exports/exam1 /etc/fstab && grep -q "/remote/data" /etc/auto.master 2>/dev/null && systemctl is-active autofs &>/dev/null; then
+if grep -q nfsserver.example.com:/exports/exam1 /etc/fstab && \
+   grep -q "/remote/data" /etc/auto.master 2>/dev/null && \
+   systemctl is-active autofs &>/dev/null; then
     pass "NFS and autofs configured" 9
 else
     fail "NFS/autofs missing"
@@ -128,7 +130,12 @@ fi
 
 # Check 9: SELinux (8 pts)
 MODE=$(grep "^SELINUX=" /etc/selinux/config | cut -d= -f2)
-if [[ "$MODE" == "enforcing" && -d /web ]] && ls -Zd /web 2>/dev/null | awk '{print $4}' | grep -q "httpd_sys_content_t" && getsebool httpd_can_network_connect 2>/dev/null | grep -q "on" && semanage port -l 2>/dev/null | grep "http_port_t" | grep -q "8080"; then
+if [[ "$MODE" == "enforcing" && -d /web ]] && \
+    # ls -Zd = system_u:object_r:httpd_sys_content_t:s0 /web
+    # so $4 is blank!
+    ls -Zd /web 2>/dev/null | awk '{print $1}' | grep -q "httpd_sys_content_t" && \
+    getsebool httpd_can_network_connect 2>/dev/null | grep -q "on" && \
+    semanage port -l 2>/dev/null | grep "http_port_t" | grep -q "8080"; then
     pass "SELinux configured" 9
 else
     fail "SELinux misconfigured"
