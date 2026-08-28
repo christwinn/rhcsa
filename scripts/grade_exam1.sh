@@ -104,7 +104,7 @@ if pvs 2>/dev/null | grep -qE "/dev/sdb1|/dev/vdb1" && \
    lvs 2>/dev/null | grep -q "lv_data" && \
    findmnt -n /mnt/data &>/dev/null && \
    # swapon returns /dev/dm-X this gives no pointer to whether we used lv_swap or sdb2
-   lsblk $(swapon --show --hoheadings | cut -d' ' -f1) | grep -qE "lv_swap|sdb2|vdb2"; then
+   lsblk $(swapon --show --noheadings | cut -d' ' -f1) | grep -qE "lv_swap|sdb2|vdb2"; then
    #swapon -s | grep -qE "lv_swap|sdb2"; then
     pass "LVM and swap configured" 9
 else
