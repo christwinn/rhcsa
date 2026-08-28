@@ -94,7 +94,7 @@ fi
 
 # Check 6: LVM and swap (8 pts)
 # solid or virtual disk
-if pvs 2>/dev/null | grep -qE "/dev/sdb1|/dev/vbd1" && \
+if pvs 2>/dev/null | grep -qE "/dev/sdb1|/dev/vdb1" && \
    vgs 2>/dev/null | grep -q vg_exam1 && \
    lvs 2>/dev/null | grep -q "lv_data" && \
    findmnt -n /mnt/data &>/dev/null && \
