@@ -28,12 +28,12 @@ Scripts to be given back once all good.
 	log in as student
 	mkdir ~/exams; cd ~/exams
 	
-	``` bash
+``` bash
 	BASE="https://raw.githubusercontent.com/christwinn/rhcsa/refs/heads/main/scripts"; \
 	for i in {1..5}; \
 	do curl $BASE/break_exam${i}.sh -o break_exam${i}.sh; 
 	curl $BASE/grade_exam${i}.sh -o grade_exam${i}.sh;
 	done
-    ```
+```
 	
 	SNAPSHOT!
