@@ -20,14 +20,25 @@ echo "=============================================="
 # Check 1: root (5 pts)
 LOCK=$(passwd -S root 2>/dev/null | awk '{print $2}')
 MAXD=$(chage -l root 2>/dev/null | grep "Maximum number of days" | awk -F': ' '{print $2}' | tr -d ' ')
-if [[ "$LOCK" != "LK" && "$MAXD" != "1" && "$MAXD" != "0" ]]; then
+# L is used indicate Locked, ref: man passwd
+if [[ "$LOCK" != "L" && "$MAXD" != "1" && "$MAXD" != "0" ]]; then
     pass "Root unlocked" 6
 else
     fail "Root locked or forced to expire"
 fi
 
 # Check 2: users/groups (6 pts)
-if id -u candidate1 &>/dev/null && [ "$(id -u candidate1)" == "2000" ] && [ "$(id -g candidate1)" == "$(getent group rhcsaadmins | cut -d: -f3)" ] && [ "$(getent group rhcsaadmins | cut -d: -f3)" == "4000" ] && [ "$(getent group rhcsausers | cut -d: -f3)" == "4001" ] && id candidate1 | grep -q rhcsausers && id -u candidate2 &>/dev/null && [ "$(id -u candidate2)" == "2001" ] && [ "$(id -g candidate2)" == "$(getent group rhcsausers | cut -d: -f3)" ] && passwd -S candidate2 2>/dev/null | awk '{print $2}' | grep -q LK; then
+if id -u candidate1 &>/dev/null && \
+   [ "$(id -u candidate1)" == "2000" ] && \
+   [ "$(id -g candidate1)" == "$(getent group rhcsaadmins | cut -d: -f3)" ] && \
+   [ "$(getent group rhcsaadmins | cut -d: -f3)" == "4000" ] && \
+   [ "$(getent group rhcsausers | cut -d: -f3)" == "4001" ] && \
+   id candidate1 | grep -q rhcsausers && \
+   id -u candidate2 &>/dev/null && \
+   [ "$(id -u candidate2)" == "2001" ] && \
+   [ "$(id -g candidate2)" == "$(getent group rhcsausers | cut -d: -f3)" ] && \
+   # changed LK to L as per man page for passwd
+   passwd -S candidate2 2>/dev/null | awk '{print $2}' | grep -q "L"; then
     pass "Users/groups configured" 7
 else
     fail "Users/groups misconfigured"
@@ -36,7 +47,10 @@ fi
 # Check 3: password aging/home (5 pts)
 HOME_OK=0
 AGING_OK=0
-if [ -d /home/candidate1 ] && [ "$(stat -c %a /home/candidate1)" == "700" ] && [ "$(stat -c %U:%G /home/candidate1)" == "candidate1:candidate1" ]; then
+if [ -d /home/candidate1 ] && \
+   [ "$(stat -c %a /home/candidate1)" == "700" ] && \
+   # in task 2 we create the user with primary group rhcsaadmins, candidate1 as a group is never created
+   [ "$(stat -c %U:%G /home/candidate1)" == "candidate1:rhcsaadmins" ]; then
     HOME_OK=1
 fi
 MAX_D=$(chage -l candidate1 2>/dev/null | grep "Maximum number of days" | awk -F': ' '{print $2}' | tr -d ' ')
@@ -52,21 +66,41 @@ else
 fi
 
 # Check 4: shared dir and umask (6 pts)
-if [ -d /shared/exam1 ] && [ "$(stat -c %a /shared/exam1)" == "2770" ] && [ "$(stat -c %U:%G /shared/exam1)" == "root:rhcsausers" ] && [ -d /shared/tmp ] && [ "$(stat -c %a /shared/tmp)" == "1777" ] && (grep -q "^UMASK.*0027" /etc/login.defs || grep -q "umask 0027" /etc/profile || grep -q "umask 0027" /etc/bashrc); then
+if [ -d /shared/exam1 ] && \
+   [ "$(stat -c %a /shared/exam1)" == "2770" ] && \
+   [ "$(stat -c %U:%G /shared/exam1)" == "root:rhcsausers" ] && \
+   [ -d /shared/tmp ] && \
+   [ "$(stat -c %a /shared/tmp)" == "1777" ] && \
+   (  grep -q "^UMASK.*0027" /etc/login.defs || \
+      # if we read profile and basrc headers they warn not to update those file so updating those files should be a fail?
+      #grep -q "umask 0027" /etc/profile || \
+      #grep -q "umask 0027" /etc/bashrc || \
+      # following on we are advised to place a custom script in profile.d so: 
+      grep -q "umask 0027" /etc/profile.d/*.sh
+   ); then
     pass "/shared/exam1 and umask configured" 7
 else
     fail "/shared/exam1, /shared/tmp, or umask wrong"
 fi
 
 # Check 5: ACLs (6 pts)
-if [ -d /private/exam1 ] && getfacl /private/exam1 2>/dev/null | grep -q "^user:candidate1:" && getfacl /private/exam1 2>/dev/null | grep -q "^default:user:candidate1:"; then
+if [ -d /private/exam1 ] && \
+     getfacl /private/exam1 2>/dev/null | grep -q "^user:candidate1:" && \
+     getfacl /private/exam1 2>/dev/null | grep -q "^default:user:candidate1:"; then
     pass "/private/exam1 ACLs configured" 7
 else
     fail "ACLs missing"
 fi
 
 # Check 6: LVM and swap (8 pts)
-if pvs 2>/dev/null | grep -q /dev/sdb1 && vgs 2>/dev/null | grep -q vg_exam1 && lvs 2>/dev/null | grep -q "lv_data" && findmnt -n /mnt/data &>/dev/null && swapon -s | grep -qE "lv_swap|sdb2"; then
+# solid or virtual disk
+if pvs 2>/dev/null | grep -qE "/dev/sdb1|/dev/vbd1" && \
+   vgs 2>/dev/null | grep -q vg_exam1 && \
+   lvs 2>/dev/null | grep -q "lv_data" && \
+   findmnt -n /mnt/data &>/dev/null && \
+   # swapon returns /dev/dm-X this gives no pointer to whether we used lv_swap or sdb2
+   lsblk $(swapon -s-show --hoheadings | cut -d' ' -f1) | grep -qE "lv_swap|sdb2|vdb2"; then
+   #swapon -s | grep -qE "lv_swap|sdb2"; then
     pass "LVM and swap configured" 9
 else
     fail "LVM/swap not configured"
