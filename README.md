@@ -12,3 +12,19 @@ so scripts updated to reflect this.
 
 Scripts to be given back once all good.
 
+# learnrhcsa vm
+	base 10GB disk
+	minimal install 10.2
+	not connected to redhat
+	root disabled
+	no swap
+	student learnrhcsa123! sudoer
+## once installed 
+	add /dev/vdb
+	/etc/default/grub timeout=10
+	grub2-mkconfig -o /boot/grub2/grub.cfg
+	grubby --update-kernel=ALL --args="console=ttyS0"
+	shutdown to test. initial start may not wait. 
+	mkdir /student/exams
+  
+	SNAPSHOT!
