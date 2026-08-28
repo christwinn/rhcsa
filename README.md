@@ -43,3 +43,5 @@ Scripts to be given back once all good.
 ```
 	
 	SNAPSHOT!
+
+	go to (learnrhcsa.com)[https://learnrhcsa.com] and begin the fun
