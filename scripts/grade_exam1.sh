@@ -166,7 +166,7 @@ if crontab -l 2>/dev/null | grep -q "backup_etc.sh" && \
    # maybe we queued a few jobs, each job will count notify.sh once(1) if it is there.
    # so if notify.sh exists so will 1, 
    # if we have notify.sh in the queue but shh.sh after then would fail but below works around that
-   echo $(for i in $(atq | cut -f1); do at -c $i | grep -c "notify.sh"; done) | grep 1 &&
+   echo $(for i in $(atq | cut -f1); do at -c $i | grep -c "notify.sh"; done) | grep 1 && \
    [ -x /usr/local/bin/backup_etc.sh ]; then
     pass "cron/at/scripts configured" 7
 else
