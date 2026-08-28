@@ -13,26 +13,26 @@ so scripts updated to reflect this.
 Scripts to be given back once all good.
 
 # learnrhcsa vm
-	base 10GB disk
-	minimal install 10.2
-	not connected to redhat
-	root disabled
-	no swap
-	student learnrhcsa123! sudoer
+base 10GB disk
+minimal install 10.2
+not connected to redhat
+root disabled
+no swap
+student learnrhcsa123! sudoer
 ## once installed 
-	add /dev/vdb
-	/etc/default/grub timeout=10
-	grub2-mkconfig -o /boot/grub2/grub.cfg
-	grubby --update-kernel=ALL --args="console=ttyS0"
-	shutdown to test. initial start may not wait. 
-	log in as student
-	mkdir ~/exams; cd ~/exams
+add /dev/vdb
+/etc/default/grub timeout=10
+grub2-mkconfig -o /boot/grub2/grub.cfg
+grubby --update-kernel=ALL --args="console=ttyS0"
+shutdown to test. initial start may not wait. 
+log in as student
+mkdir ~/exams; cd ~/exams
 
-	run the script to gather the files, we will update these as we work through. 
-	No! it is not cheating if the scripts do not 
-	1 work 
-	or 
-	2 validate correctly, things have changed 
+run the script to gather the files, we will update these as we work through. 
+No! it is not cheating if the scripts do not 
+1 work 
+or 
+2 validate correctly, things have changed 
 	
 ``` bash
 	BASE="https://raw.githubusercontent.com/christwinn/rhcsa/refs/heads/main/scripts"; \
@@ -41,7 +41,8 @@ Scripts to be given back once all good.
 	curl $BASE/grade_exam${i}.sh -o grade_exam${i}.sh; \
 	done
 ```
-	
-	SNAPSHOT!
+## next
 
-	go to (learnrhcsa.com)[https://learnrhcsa.com] and begin the fun
+SNAPSHOT!
+
+go to [learnrhcsa.com](https://learnrhcsa.com) and begin the fun
