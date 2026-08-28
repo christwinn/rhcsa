@@ -142,7 +142,9 @@ else
 fi
 
 # Check 10: firewalld (6 pts)
-if systemctl is-active firewalld &>/dev/null && firewall-cmd --list-services --permanent | grep -qE "http|https|ssh" && firewall-cmd --list-ports --permanent | grep -q "8080/tcp"; then
+if systemctl is-active firewalld &>/dev/null && \
+   firewall-cmd --list-services --permanent | grep -qE "http|https|ssh" && \
+   firewall-cmd --list-ports --permanent | grep -q "8080/tcp"; then
     pass "firewalld configured" 7
 else
     fail "firewalld misconfigured"
@@ -150,14 +152,17 @@ fi
 
 # Check 11: systemd/services (6 pts)
 TARGET=$(systemctl get-default 2>/dev/null || echo "")
-if [[ "$TARGET" == "multi-user.target" ]] && systemctl is-active httpd sshd chronyd &>/dev/null; then
+if [[ "$TARGET" == "multi-user.target" ]] && \
+   systemctl is-active httpd sshd chronyd &>/dev/null; then
     pass "systemd/services configured" 7
 else
     fail "target=$TARGET or services not active"
 fi
 
 # Check 12: cron/at (6 pts)
-if crontab -l 2>/dev/null | grep -q "backup_etc.sh" && atq 2>/dev/null | grep -q "notify.sh" && [ -x /usr/local/bin/backup_etc.sh ]; then
+if crontab -l 2>/dev/null | grep -q "backup_etc.sh" && \
+   atq 2>/dev/null | grep -q "notify.sh" && \
+   [ -x /usr/local/bin/backup_etc.sh ]; then
     pass "cron/at/scripts configured" 7
 else
     fail "cron/at/scripts missing"
@@ -173,7 +178,11 @@ else
 fi
 
 # Check 14: software/kernel (5 pts)
-if [ -f /etc/yum.repos.d/exam1.repo ] && grep -qi "baseos" /etc/yum.repos.d/exam1.repo && rpm -q httpd bash-completion tmux &>/dev/null && tuned-adm active 2>/dev/null | grep -q "virtual-guest" && sysctl -n vm.swappiness 2>/dev/null | grep -q "10"; then
+if [ -f /etc/yum.repos.d/exam1.repo ] && \
+   grep -qi "baseos" /etc/yum.repos.d/exam1.repo && \
+   rpm -q httpd bash-completion tmux &>/dev/null && \
+   tuned-adm active 2>/dev/null | grep -q "virtual-guest" && \
+   sysctl -n vm.swappiness 2>/dev/null | grep -q "10"; then
     pass "software/kernel tuned" 6
 else
     fail "software/kernel misconfigured"
