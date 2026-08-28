@@ -27,12 +27,18 @@ Scripts to be given back once all good.
 	shutdown to test. initial start may not wait. 
 	log in as student
 	mkdir ~/exams; cd ~/exams
+
+	run the script to gather the files, we will update these as we work through. 
+	No! it is not cheating if the scripts do not 
+	1 work 
+	or 
+	2 validate correctly, things have changed 
 	
 ``` bash
 	BASE="https://raw.githubusercontent.com/christwinn/rhcsa/refs/heads/main/scripts"; \
 	for i in {1..5}; \
-	do curl $BASE/break_exam${i}.sh -o break_exam${i}.sh; 
-	curl $BASE/grade_exam${i}.sh -o grade_exam${i}.sh;
+	do curl $BASE/break_exam${i}.sh -o break_exam${i}.sh; \
+	curl $BASE/grade_exam${i}.sh -o grade_exam${i}.sh; \
 	done
 ```
 	
