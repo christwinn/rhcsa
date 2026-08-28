@@ -25,6 +25,15 @@ Scripts to be given back once all good.
 	grub2-mkconfig -o /boot/grub2/grub.cfg
 	grubby --update-kernel=ALL --args="console=ttyS0"
 	shutdown to test. initial start may not wait. 
-	mkdir /student/exams
-  
+	log in as student
+	mkdir ~/exams; cd ~/exams
+	
+	``` bash
+	BASE="https://raw.githubusercontent.com/christwinn/rhcsa/refs/heads/main/scripts"; \
+	for i in {1..5}; \
+	do curl $BASE/break_exam${i}.sh -o break_exam${i}.sh; 
+	curl $BASE/grade_exam${i}.sh -o grade_exam${i}.sh;
+	done
+    ```
+	
 	SNAPSHOT!
