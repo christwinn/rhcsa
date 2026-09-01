@@ -32,7 +32,8 @@ if id -u op1 &>/dev/null && \
    [ "$(id -g op1)" == "$(getent group sysadmins | cut -d: -f3)" ] && \
    [ "$(getent group sysadmins | cut -d: -f3)" == "3500" ] && \
    [ "$(getent group operators | cut -d: -f3)" == "3501" ] && \
-   id op1 | grep -q operators && id -u op2 &>/dev/null && \
+   id op1 | grep -q operators && \
+   id -u op2 &>/dev/null && \
    [ "$(id -u op2)" == "2501" ] && \
    [ "$(id -g op2)" == "$(getent group operators | cut -d: -f3)" ] && \
    passwd -S op2 2>/dev/null | awk '{print $2}' | grep -q L; then
