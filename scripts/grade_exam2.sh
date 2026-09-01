@@ -146,7 +146,8 @@ fi
 
 # Check 12: cron/at/timer (6 pts)
 if crontab -l 2>/dev/null | grep -q "archive_logs.sh" && \
-   atq 2>/dev/null | grep -q "notify.sh" && \
+   # atq 2>/dev/null | grep -q "notify.sh" && \
+   echo $(for i in $(atq | cut -f1); do at -c $i | grep -c "notify.sh"; done) | grep -q "1" && \
    [ -x /usr/local/bin/archive_logs.sh ] && \
    systemctl is-enabled exam2.timer &>/dev/null; then
     pass "cron/at/timer configured" 7
