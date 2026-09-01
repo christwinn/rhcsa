@@ -85,11 +85,12 @@ else
 fi
 
 # Check 6: LVM and swap (6 pts)
-if pvs 2>/dev/null | grep -q /dev/sdb1 && \
+if pvs 2>/dev/null | grep -qE "/dev/sdb1|/dev/vdb1" && \
    vgs 2>/dev/null | grep -q vg_exam2 && \
    lvs 2>/dev/null | grep -q "lv_app" && \
    findmnt -n /mnt/app &>/dev/null && \
-   swapon -s | grep -q lv_swap; then
+   lsblk $(swapon --show --noheadings | cut -d' ' -f1) | grep -qE "lv_swap"; then
+   # swapon -s | grep -q lv_swap; then retruns /dev/dm-X
     pass "LVM and swap configured" 7
 else
     fail "LVM/swap not configured"
