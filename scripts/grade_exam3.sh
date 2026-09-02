@@ -72,7 +72,7 @@ if [ -d /project/exam3 ] && \
    [ "$(stat -c %a /project/exam3)" == "2770" ] && \
    [ "$(stat -c %U:%G /project/exam3)" == "root:students" ] && \
    ( grep -q "^UMASK.*0077" /etc/login.defs || \
-     grep -q "umask 0027" /etc/profile.d/*.sh
+     grep -q "^umask 0077" /etc/profile.d/*.sh
    ); then
     pass "Permissions and SGID configured" 5
 else
