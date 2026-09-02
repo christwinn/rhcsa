@@ -89,7 +89,7 @@ atq 2>/dev/null | awk '{print $1}' | xargs -r atrm 2>/dev/null || true
 echo "[BREAK] scripts/cron/at removed" | tee -a "$LOG"
 
 # Network
-IFACE=$(nmcli -t -f DEVICE,TYPE device show | grep ethernet | head -n1 | cut -d: -f1)
+IFACE=$(nmcli -t -f GENERAL.DEVICE,GENERAL.TYPE device show | grep ethernet | head -n1 | cut -d: -f1)
 if [[ -n "$IFACE" ]]; then
     nmcli connection down "$IFACE" 2>/dev/null || true
     nmcli connection delete "$IFACE" 2>/dev/null || true
