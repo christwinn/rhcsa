@@ -9,6 +9,11 @@ PASS=0
 FAIL=0
 SCORE=0
 
+if [ "$EUID" -ne 0 ]; then
+  echo "This script must be run as root (sudo bash grade_exam2.sh)."
+  exit 1
+fi
+
 pass() { echo "  [PASS] $1"; SCORE=$((SCORE+$2)); PASS=$((PASS+1)); }
 fail() { echo "  [FAIL] $1"; FAIL=$((FAIL+1)); }
 
