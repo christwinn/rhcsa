@@ -150,7 +150,8 @@ fi
 
 # Check 12: cron/at (6 pts)
 if crontab -l 2>/dev/null | grep -q "cleanup_tmp.sh" && \
-   atq 2>/dev/null | grep -q "send_report.sh" && \
+   # atq 2>/dev/null | grep -q "send_report.sh" && \
+   echo $(for i in $(atq | cut -f1); do at -c $i | grep -c "send_report.sh"; done) | grep -q "1" && \
    [ -x /usr/local/bin/cleanup_tmp.sh ]; then
     pass "cron/at/scripts configured" 6
 else
