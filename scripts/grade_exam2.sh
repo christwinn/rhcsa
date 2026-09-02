@@ -198,7 +198,7 @@ fi
 
 echo ""
 echo "=============================================="
-echo " RESULTS: $PASS/16 checks passed"
+echo " RESULTS: $PASS/15 checks passed"
 echo " SCORE:   $SCORE / 100"
 echo "=============================================="
 if [[ $SCORE -ge 70 ]]; then
