@@ -165,13 +165,15 @@ else
 fi
 
 # Check 14: container (8 pts)
-(podman ps --format "{{.Names}}" 2>/dev/null | grep -q "^systemd-exam2-web$" && \
- [ -f /etc/containers/systemd/exam2-web.container ] && pass "systemd Podman container configured" 9 ) \
-|| \
-(podman ps --format "{{.Names}}" 2>/dev/null | grep -q "^exam2-web$" && \
- systemctl is-enabled container-exam2-web &>/dev/null && pass "Podman container configured" 9 ) \
-||
-fail "Container missing"
+if podman ps --format "{{.Names}}" 2>/dev/null | grep -q "^systemd-exam2-web$" && \
+   [ -f /etc/containers/systemd/exam2-web.container ]; then
+     pass "systemd Podman container configured" 9
+else if podman ps --format "{{.Names}}" 2>/dev/null | grep -q "^exam2-web$" && \
+   systemctl is-enabled container-exam2-web &>/dev/null; then
+     pass "Podman container configured" 9
+else
+     fail "Container missing"
+fi fi
 
 #if podman ps --format "{{.Names}}" 2>/dev/null | grep -q "^exam2-web$" && \
 #   systemctl is-enabled container-exam2-web &>/dev/null; then
@@ -198,7 +200,7 @@ fi
 
 echo ""
 echo "=============================================="
-echo " RESULTS: $PASS/15 checks passed"
+echo " RESULTS: $PASS/16 checks passed"
 echo " SCORE:   $SCORE / 100"
 echo "=============================================="
 if [[ $SCORE -ge 70 ]]; then
