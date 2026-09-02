@@ -165,12 +165,20 @@ else
 fi
 
 # Check 14: container (8 pts)
-if podman ps --format "{{.Names}}" 2>/dev/null | grep -q "^exam2-web$" && \
-   systemctl is-enabled container-exam2-web &>/dev/null; then
-    pass "Podman container configured" 9
-else
-    fail "container missing"
-fi
+(podman ps --format "{{.Names}}" 2>/dev/null | grep -q "^systemd-exam2-web$" && \
+ [ -f /etc/containers/systemd/exam2-web.container ] && pass "systemd Podman container configured" 9 ) \
+|| \
+(podman ps --format "{{.Names}}" 2>/dev/null | grep -q "^exam2-web$" && \
+ systemctl is-enabled container-exam2-web &>/dev/null && pass "Podman container configured" 9 ) \
+||
+fail "Container missing"
+
+#if podman ps --format "{{.Names}}" 2>/dev/null | grep -q "^exam2-web$" && \
+#   systemctl is-enabled container-exam2-web &>/dev/null; then
+#    pass "Podman container configured" 9
+#else
+#    fail "container missing"
+#fi
 
 # Check 15: script (6 pts)
 if [ -x /usr/local/bin/check_users.sh ] && \
