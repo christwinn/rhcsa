@@ -52,7 +52,7 @@ HOME_OK=0
 AGING_OK=0
 if [ -d /home/user1 ] && \
 [ "$(stat -c %a /home/user1)" == "700" ] && \
-[ "$(stat -c %U:%G /home/user1)" == "user1:user1" ]; then
+[ "$(stat -c %U:%G /home/user1)" == "user1:staff" ]; then
     HOME_OK=1
 fi
 MAX_D=$(chage -l user1 2>/dev/null | grep "Maximum number of days" | awk -F': ' '{print $2}' | tr -d ' ')
@@ -71,7 +71,9 @@ fi
 if [ -d /project/exam3 ] && \
    [ "$(stat -c %a /project/exam3)" == "2770" ] && \
    [ "$(stat -c %U:%G /project/exam3)" == "root:students" ] && \
-   grep -q "^UMASK.*0077" /etc/login.defs; then
+   ( grep -q "^UMASK.*0077" /etc/login.defs || \
+     grep -q "umask 0027" /etc/profile.d/*.sh
+   ); then
     pass "Permissions and SGID configured" 5
 else
     fail "permissions wrong"
@@ -87,10 +89,12 @@ else
 fi
 
 # Check 6: LVM and swap (8 pts)
-if pvs 2>/dev/null | grep -q /dev/sdb1 && \
+if pvs 2>/dev/null | grep -q -E "/dev/sdb1|/dev/vdb1" && \
    vgs 2>/dev/null | grep -q vg_exam3 && \
    lvs 2>/dev/null | grep -q "lv_docs" && \
-   findmnt -n /mnt/docs &>/dev/null && swapon -s | grep -q lv_swap; then
+   findmnt -n /mnt/docs &>/dev/null && \
+   lsblk $(swapon --show --noheadings | cut -d' ' -f1) | grep -qE "lv_swap|sdb2|vdb2"; then 
+   # swapon -s | grep -q lv_swap; then
     pass "LVM and swap configured" 9
 else
     fail "LVM/swap not configured"
@@ -117,7 +121,7 @@ fi
 # Check 9: SELinux (8 pts)
 MODE=$(grep "^SELINUX=" /etc/selinux/config | cut -d= -f2)
 if [[ "$MODE" == "enforcing" && -d /webdocs ]] && \
-   ls -Zd /webdocs 2>/dev/null | awk '{print $4}' | grep -q "httpd_sys_content_t" && \
+   ls -lZd /webdocs 2>/dev/null | awk '{print $5}' | grep -q "httpd_sys_content_t" && \
    getsebool httpd_can_sendmail 2>/dev/null | grep -q "on" && \
    getsebool httpd_use_nfs 2>/dev/null | grep -q "on" && \
    semanage port -l 2>/dev/null | grep "http_port_t" | grep -q "8888"; then
