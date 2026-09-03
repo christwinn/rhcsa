@@ -90,7 +90,7 @@ else
 fi
 
 # Check 6: LVM and swap (6 pts)
-if pvs 2>/dev/null | grep -q /dev/sdb1 && \
+if pvs 2>/dev/null | grep -q -E "/dev/sdb1|/dev/vdb1" && \
    vgs 2>/dev/null | grep -q vg_exam4 && \
    lvs 2>/dev/null | grep -q "lv_data" && \
    findmnt -n /mnt/data &>/dev/null && \
