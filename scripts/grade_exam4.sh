@@ -122,7 +122,7 @@ fi
 # Check 9: SELinux (8 pts)
 MODE=$(grep "^SELINUX=" /etc/selinux/config | cut -d= -f2)
 if [[ "$MODE" == "enforcing" && -d /webapp ]] && \
-    ls -lZd /webapp 2>/dev/null | awk '{print $4}' | grep -q "httpd_sys_content_t" && \
+    ls -lZd /webapp 2>/dev/null | awk '{print $5}' | grep -q "httpd_sys_content_t" && \
     getsebool httpd_can_network_connect 2>/dev/null | grep -q "on" && \
     getsebool httpd_can_sendmail 2>/dev/null | grep -q "on" && \
     semanage port -l 2>/dev/null | grep "http_port_t" | grep -q "8090"; then
