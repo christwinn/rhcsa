@@ -92,7 +92,7 @@ systemctl daemon-reload 2>/dev/null || true
 echo "[BREAK] scripts/timers/cron removed" | tee -a "$LOG"
 
 # Network
-IFACE=$(nmcli -t -f DEVICE,TYPE device show | grep ethernet | head -n1 | cut -d: -f1)
+IFACE=$(nmcli -t -f DEVICE,TYPE device | grep ethernet | head -n1 | cut -d: -f1)
 if [[ -n "$IFACE" ]]; then
     nmcli connection down "$IFACE" 2>/dev/null || true
     nmcli connection delete "$IFACE" 2>/dev/null || true
