@@ -93,7 +93,9 @@ fi
 if pvs 2>/dev/null | grep -q /dev/sdb1 && \
    vgs 2>/dev/null | grep -q vg_exam4 && \
    lvs 2>/dev/null | grep -q "lv_data" && \
-   findmnt -n /mnt/data &>/dev/null && swapon -s | grep -q lv_swap; then
+   findmnt -n /mnt/data &>/dev/null && \
+   lsblk $(swapon --show --noheadings | cut -d' ' -f1) | grep -q "lv_swap"; then 
+   #swapon -s | grep -q lv_swap; then
     pass "LVM and swap configured" 6
 else
     fail "LVM/swap not configured"
