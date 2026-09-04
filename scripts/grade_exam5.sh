@@ -150,7 +150,7 @@ fi
 if systemctl is-active httpd &>/dev/null; then
    # setup as systemd unit files
    if podman ps --format "{{.Names}}" 2>/dev/null | grep -q "^systemd-examweb$" && \
-      [ -f /etc/containers/systemd/exam2-web.container ]; then
+      [ -f /etc/containers/systemd/examweb.container ]; then
         pass "systemd Podman container configured" 5
    # set up as seperate service 
    else if podman ps --format "{{.Names}}" 2>/dev/null | grep -q "^examweb$" && \
