@@ -151,7 +151,8 @@ fi
 
 # Check 12: cron/at/timer (6 pts)
 if crontab -l 2>/dev/null | grep -q "report.sh" && \
-   atq 2>/dev/null | grep -q "send_alert.sh" && \
+   #atq 2>/dev/null | grep -q "send_alert.sh" && \
+   echo $(for i in $(atq | cut -f1); do at -c $i | grep -c "send_alert.sh"; done) | grep -q "1" && \
    [ -x /usr/local/bin/report.sh ] && \
    systemctl is-enabled exam4.timer &>/dev/null; then
     pass "cron/at/timer configured" 6
