@@ -45,7 +45,7 @@ if [ -b /dev/sdb ]; then
 else if [ -b /dev/vdb ]; then
   DEVICE=vdb
   PART=vdb1
-fi
+fi fi
 
 if [ ! -z DEVICE ]; then
     wipefs -a /dev/$DEVICE 2>/dev/null || true
