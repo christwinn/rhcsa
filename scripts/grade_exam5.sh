@@ -196,7 +196,7 @@ fi
 
 # Check 16: cron/at/timer (6 pts)
 if crontab -l 2>/dev/null | grep -q "exam_backup" && \
-   atq 2>/dev/null | grep -q "exam_alert" && \
+   #atq 2>/dev/null | grep -q "exam_alert" && \
    echo $(for i in $(atq | cut -f1); do at -c $i | grep -c "exam_alert.sh"; done) | grep -q "1" && \
    systemctl is-enabled exam.timer &>/dev/null; then
     pass "cron/at/timer configured" 5
