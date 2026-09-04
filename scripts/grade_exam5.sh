@@ -121,7 +121,7 @@ fi
 
 # Check 10: SELinux (6 pts)
 MODE=$(grep "^SELINUX=" /etc/selinux/config | cut -d= -f2)
-if [[ "$MODE" == "enforcing" && -d /web ]] && \ 
+if [[ "$MODE" == "enforcing" && -d "/web" ]] && \ 
     ls -lZd /web 2>/dev/null | awk '{print $5}' | grep -q "httpd_sys_content_t" && \
     getsebool httpd_can_network_connect 2>/dev/null | grep -q "on" && \
     semanage port -l 2>/dev/null | grep "http_port_t" | grep -q "8443"; then
