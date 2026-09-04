@@ -40,10 +40,18 @@ echo "[BREAK] Shared directories removed" | tee -a "$LOG"
 
 # Storage
 if [ -b /dev/sdb ]; then
-    wipefs -a /dev/sdb 2>/dev/null || true
+  DEVICE=sdb
+  PART=sdb1
+else if [ -b /dev/vdb ]; then
+  DEVICE=vdb
+  PART=vdb1
+fi
+
+if [ ! -z DEVICE ]; then
+    wipefs -a /dev/$DEVICE 2>/dev/null || true
     vgremove -y vg_final 2>/dev/null || true
-    pvremove -y /dev/sdb1 2>/dev/null || true
-    parted -s /dev/sdb mklabel msdos 2>/dev/null || true
+    pvremove -y /dev/$PART 2>/dev/null || true
+    parted -s /dev/$DEVICE mklabel msdos 2>/dev/null || true
 fi
 umount -f /mnt/final /mnt/nfsexam /mnt/labeled 2>/dev/null || true
 sed -i '/\/mnt\/final/d; /\/mnt\/nfsexam/d; /\/mnt\/labeled/d' /etc/fstab 2>/dev/null || true
