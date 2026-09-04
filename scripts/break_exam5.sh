@@ -99,7 +99,7 @@ rm -f /etc/systemd/system/container-examweb.service
 echo "[BREAK] httpd and container removed" | tee -a "$LOG"
 
 # Network
-IFACE=$(nmcli -t -f DEVICE,TYPE device show | grep ethernet | head -n2 | tail -n1 | cut -d: -f1)
+IFACE=$(nmcli -t -f DEVICE,TYPE device | grep ethernet | head -n2 | tail -n1 | cut -d: -f1)
 if [[ -n "$IFACE" ]]; then
     nmcli connection down "$IFACE" 2>/dev/null || true
     nmcli connection delete "$IFACE" 2>/dev/null || true
