@@ -147,12 +147,20 @@ else
 fi
 
 # Check 12: httpd and container (6 pts)
-if systemctl is-active httpd &>/dev/null && \
-   podman ps --format "{{.Names}}" 2>/dev/null | grep -q "^examweb$" && \
-   systemctl is-enabled container-examweb &>/dev/null; then
-    pass "httpd and container configured" 5
-else
-    fail "httpd/container misconfigured"
+if systemctl is-active httpd &>/dev/null; then
+   # setup as systemd unit files
+   if podman ps --format "{{.Names}}" 2>/dev/null | grep -q "^systemd-examweb$" && \
+      [ -f /etc/containers/systemd/exam2-web.container ]; then
+        pass "systemd Podman container configured" 5
+   # set up as seperate service 
+   else if podman ps --format "{{.Names}}" 2>/dev/null | grep -q "^examweb$" && \
+      systemctl is-enabled container-examweb &>/dev/null; then  
+        pass "Podman container configured" 5
+   else
+        fail "httpd configured/container misconfigured"    
+   fi fi
+else 
+    fail "httpd misconfigured"
 fi
 
 # Check 13: SSH/network (6 pts)
