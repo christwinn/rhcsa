@@ -142,9 +142,12 @@ for PORT in 8080 8081 8443; do
     FIREWALL_OK=0
   fi
 done
-if ! firewall-cmd --list-services --permanent 2>/dev/null | grep -qE "(^|[[:space:]])(http|https)([[:space:]]|$)"; then
+if [ $(firewall-cmd --list-services --permanent 2>/dev/null | tr ' ' '\n' | grep -cE "(^http|https$)") -ne 2 ]; then 
   FIREWALL_OK=0
-fi
+fi 
+# if ! firewall-cmd --list-services --permanent 2>/dev/null | grep -qE "(^|[[:space:]])(http|https)([[:space:]]|$)"; then
+#  FIREWALL_OK=0
+# fi
 if systemctl is-active firewalld &>/dev/null && [ "$FIREWALL_OK" -eq 1 ]; then
     pass "firewalld configured" 5
 else
