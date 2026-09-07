@@ -3,7 +3,7 @@ learnrhcsa.com scripts modified for KVM guest and RedHat 10.2
 
 The site appears to have been written for RH9 but 10 has changes :-) 
 
-The scripts to break the system are oops broken in RedHat 10
+The scripts to break the system are oops broken in RedHat 10, fix was simply removing the 'show ' from the nmcli command.
 
 As I fix them I want to be able to pull them into my base machine so that is the whole point of this repo. 
 
