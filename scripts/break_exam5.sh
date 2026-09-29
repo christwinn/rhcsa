@@ -45,9 +45,11 @@ if [ -b /dev/sdb ]; then
 else if [ -b /dev/vdb ]; then
   DEVICE=vdb
   PART=vdb1
+else
+  DEVICE=""
 fi fi
 
-if [ ! -z DEVICE ]; then
+if [ ! -z $DEVICE ]; then
     wipefs -a /dev/$DEVICE 2>/dev/null || true
     vgremove -y vg_final 2>/dev/null || true
     pvremove -y /dev/$PART 2>/dev/null || true
